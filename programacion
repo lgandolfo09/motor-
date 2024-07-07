@@ -1,0 +1,84 @@
+#include <SoftwareSerial.h>   // Incluimos la librería  SoftwareSerial  
+SoftwareSerial BT(0,1);    // Definimos los pines RX y TX del Arduino conectados al Bluetooth
+ int rele1=14; //rele de arranque del motor
+ int rele2=15; //rele de velocidad 1
+ int rele3=16; //rele de velocidad 2
+ int rele4=17; //rele de velocidad 3
+void setup(){
+  BT.begin(9600);       // Inicializamos el puerto serie BT que hemos creado
+  pinMode(rele1,OUTPUT);
+  pinMode(rele2,OUTPUT);
+  pinMode(rele3,OUTPUT);
+  pinMode(rele4,OUTPUT); 
+}
+void loop(){
+  while(BT.available()){
+    BT.write("Bienvenido");
+    BT.write("Use los comando 0:Arranque//1:Velociad Lenta//2:Velocidad Media//3:Velocidad Maxima");
+    char comando =BT.read();
+    if(comando==0){ // Espera que escriba 0 para iniciar el motor
+      Arranque();   //Arranqua el motor
+    }
+    else{
+      BT.write("Escriba el comando 0 para inciar el motor");
+    }
+    if(comando==1){ //Espera que escriba 1 para la velocidad 1
+      if(rele1==HIGH){
+      Velo1();
+      }
+      else{
+        delay(100);
+        BT.write("Primero Arranque el motor escribiendo 0");
+        delay(100);
+      }
+    }
+    if(comando==2){ //Espera que escriba 2 para la velocidad 2
+      if(rele1==HIGH){
+      Velo2();
+      }
+      else{
+        delay(100);
+        BT.write("Primero Arranque el motor escribiendo 0");
+        delay(100);
+      }
+    }
+    if(comando==3){ //Espera que escriba 3 para la velocidad 3
+      if(rele1==HIGH){
+      Velo3();
+      }
+      else{
+        delay(100);
+        BT.write("Primero Arranque el motor escribiendo 0");
+        delay(100);
+      }
+    }
+  }
+}
+void Arranque(){            //Velocidad de Arranque del  motor
+  digitalWrite(rele1,HIGH); //Prende el rele de conexiones de arranque del motor
+  delay(100);
+}
+void Velo1(){               //Velocidad mas baja del motor
+  digitalWrite(rele2,HIGH); //Prende el Rele con las conexiones mas lenta del motor
+  delay(50);
+  digitalWrite(rele3,LOW);  //Apaga el resto de los reles para que no haya otra velocidad
+  delay(50);
+  digitalWrite(rele4,LOW);
+  delay(100);
+}
+void Velo2(){               //Velocidad media del motor
+  digitalWrite(rele2,LOW);  //Apaga el resto de los reles para que no haya otra velocidad
+  delay(50);
+  digitalWrite(rele3,HIGH); //Prende el rele con la conexion de velocidad media del motor
+  delay(50);
+  digitalWrite(rele4,LOW);
+  delay(100);
+}
+void Velo3(){               //Velocidad mas Alta del motor
+  digitalWrite(rele1,LOW);  //Apaga el resto de los reles para que no haya otra velocidad 
+  delay(50);
+  digitalWrite(rele1,LOW);  
+  delay(50);
+  digitalWrite(rele1,HIGH); //Prende el rele con la conexion con mayor velocidad del motor
+  delay(100);
+}
